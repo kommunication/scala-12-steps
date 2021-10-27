@@ -1,1 +1,1 @@
-# scala-122-steps
+# scala-12-steps
