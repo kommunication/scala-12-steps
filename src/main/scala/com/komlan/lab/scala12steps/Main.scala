@@ -5,7 +5,7 @@ import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 import java.util.concurrent.ForkJoinPool
-import scala.collection.generic.CanBuildFrom
+import scala.collection.BuildFrom
 
 object ConconrentFuturesSequence  {
     def print(message: String): Unit = println(s"[${getClass.getSimpleName()}]: ${message}") 
@@ -48,8 +48,8 @@ object SerialFuturesFlatMap {
     
 }
 object FutureExt {
-  def seq[A, M[X] <: IterableOnce[X]](in: M[() => Future[A]])(implicit cbf: CanBuildFrom[M[() => Future[A]], A, M[A]], executor: ExecutionContext): Future[M[A]] = {
-    in.iterator.foldLeft(Future.successful(cbf(in))) {
+  def seq[A, M[X] <: IterableOnce[X]](in: M[() => Future[A]])(implicit cbf: BuildFrom[M[() => Future[A]], A, M[A]], executor: ExecutionContext): Future[M[A]] = {
+    in.iterator.foldLeft(Future.successful(cbf.newBuilder(in))) {
       (fr, ffa) => for (r <- fr; a <- ffa()) yield (r += a)
     } map (_.result())
   }
