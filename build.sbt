@@ -36,6 +36,7 @@ lazy val commonScalacOptions = Seq(
 lazy val dependencies = Seq(
   libraryDependencies ++= Seq(
     // main dependencies
+    "com.michaelpollmeier" %% "scala-arm" % "2.1"
   ),
   libraryDependencies ++= Seq(
     com.github.alexarchambault.`scalacheck-shapeless_1.15`,
@@ -43,5 +44,6 @@ lazy val dependencies = Seq(
     org.scalatest.scalatest,
     org.scalatestplus.`scalacheck-1-15`,
     org.typelevel.`discipline-scalatest`,
+
   ).map(_ % Test),
 )

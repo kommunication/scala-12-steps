@@ -1,6 +1,6 @@
 package com.komlan.lab.scala12steps.part05typeclasses
 
-object LabTypeClasses extends App {
+object LabTypeClasses {
     
     println("-" * 50)
     println(("--     Prefer Type Classes Over Interface       --" ))
@@ -61,19 +61,35 @@ object LabTypeClasses extends App {
         // Life wintout type classes
         final case class Person(firstName: String, lastName: String)
         
-        object PersonCanChat {
-            def chat(x: Person): Unit = println(s"Hi, I'm ${x.firstName}")
-        }
-        
-        PersonCanChat.chat(Person("Will", "Smith"))
-
         final case class Dog(name: String)
-
-        object DocCanChat {
-            def chat(x: Dog): Unit = println(s"Woof, my name is ${x.name}")
+        object ChattyAddons {
+            implicit object PersonCanChat extends CanChat[Person] {
+                def chat(x: Person): String = s"Hi, I'm ${x.firstName}"
+            }
+            implicit object DogCanChat extends CanChat[Dog] {
+                def chat(x: Dog): String = s"Woof, my name is ${x.name}"
+            }
+    
+            implicit final class ChatUtil[A](x: A) {
+                def chat(implicit makesChatty: CanChat[A]): String = makesChatty.chat(x)
+            }
         }
 
-        DocCanChat.chat(Dog("Gobby"))
+        
+        // println (PersonCanChat.chat(Person("Will", "Smith")))
+        // println(DogCanChat.chat(Dog("Gobby")))
+
+        import ChattyAddons._
+        println(Dog("Gobby").chat)
+        println(Person("Will", "Smith").chat)
+
+       
+        object PersonCanChatFormally extends CanChat[Person] {
+            def chat(x: Person) = s"Hello, I'm ${x.firstName} ${x.lastName}"
+        }
+
+        println(Person("Jaydan", "Smith").chat(PersonCanChatFormally))
+
 
         "Part 3"
     }
